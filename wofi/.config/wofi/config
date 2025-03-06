@@ -4,3 +4,4 @@ normal_window=false
 no_actions=true
 width=800
 height=400
+mode=drun
