@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# Set strict error handling
+set -euo pipefail
+
+# Store the program name without extension for error messages
+readonly PROGRAM_NAME="${0##*/}" # This removes the path from $0
+
+# Usage/help message function
+usage() {
+  cat <<EOF
+Usage: ${PROGRAM_NAME} <session_name>
+Create a tmux session.
+
+Arguments:
+    session_name    Name of the tmux session to create
+EOF
+}
+
+# Error exit function
+# $1: The command or context that caused the error
+# $2: The error message
+error_exit() {
+  local context="$1"
+  local message="$2"
+  printf "%s: %s: %s\n" "$PROGRAM_NAME" "$context" "$message" >&2
+  exit 1
+}
+
+# Create new tmux session and attach
+create_session_and_attach() {
+  local session_name="$1"
+  read -r -p "Session '$session_name' does not exist. Do you want to create it? (y/n): " REPLY </dev/tty
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    echo "Creating and attaching to new tmux session '$session_name'..."
+    tmux new-session -s "$session_name"
+    exit 0
+  fi
+  exit 0
+}
+
+# Attach if session already exists
+attach_if_session_already_exists() {
+  local session_name="$1"
+  if tmux has-session -t "$session_name" 2>/dev/null; then
+    echo "Attaching to existing tmux session '$session_name'..."
+    tmux attach-session -t "$session_name"
+    exit 0
+  fi
+}
+
+# Main script execution
+main() {
+
+  # Check for help flags first
+  if [ $# -eq 1 ] && { [ "$1" = "-h" ] || [ "$1" = "--help" ]; }; then
+    usage
+    exit 0
+  fi
+
+  # Check for correct number of arguments
+  if [ $# -ne 1 ]; then
+    usage
+    exit 1
+  fi
+
+  local session_name="$1"
+
+  # Run checks
+  attach_if_session_already_exists "$session_name"
+  create_session_and_attach "$session_name"
+}
+
+# Execute main function
+main "$@"

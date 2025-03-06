@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Set strict error handling
+set -euo pipefail
+
+# Store the program name without extension for error messages
+readonly PROGRAM_NAME="${0##*/}" # This removes the path from $0
+
+# Usage/help message function
+usage() {
+  cat <<EOF
+Usage: ${PROGRAM_NAME} <file_path>
+    Create a file in the given directory. Create directory if not present.
+Arguments:
+    file_path    File path
+EOF
+}
+
+# Error exit function
+# $1: The command or context that caused the error
+# $2: The error message
+error_exit() {
+  local context="$1"
+  local message="$2"
+  printf "%s: %s: %s\n" "$PROGRAM_NAME" "$context" "$message" >&2
+  exit 1
+}
+
+# Create file with directory if needed
+mkfile() {
+  mkdir -p "$(dirname "$1")" && touch "$1"
+}
+
+# Get and validate file path
+get_file_path() {
+  local file_path="$1"
+
+  # Check if file path is provided
+  if [ -z "$file_path" ]; then
+    error_exit "validation" "File path cannot be empty"
+  fi
+
+  echo "$file_path"
+}
+
+# Main script execution
+main() {
+  # Check for help flags first
+  if [ $# -eq 0 ] || { [ $# -eq 1 ] && { [ "$1" = "-h" ] || [ "$1" = "--help" ]; }; }; then
+    usage
+    exit 0
+  fi
+
+  # Check for correct number of arguments
+  if [ $# -ne 1 ]; then
+    error_exit "argument count" "Expected 1 argument, got $#"
+  fi
+
+  # Get and validate file path
+  local file_path
+  file_path=$(get_file_path "$1")
+
+  # Create the file with directories if needed
+  mkfile "$file_path"
+
+  echo "Successfully created: $file_path"
+}
+
+# Execute main function
+main "$@"

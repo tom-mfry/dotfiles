@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+
+# Set strict error handling
+set -euo pipefail
+
+# Store the program name without extension for error messages
+readonly PROGRAM_NAME="${0##*/}" # This removes the path from $0
+
+# Usage/help message function
+usage() {
+  cat <<EOF
+Usage: ${PROGRAM_NAME} <session_name>
+Delete a tmux session.
+
+Arguments:
+    session_name    Name of the tmux session to delete
+EOF
+}
+
+# Error exit function
+# $1: The command or context that caused the error
+# $2: The error message
+error_exit() {
+  local context="$1"
+  local message="$2"
+  printf "%s: %s: %s\n" "$PROGRAM_NAME" "$context" "$message" >&2
+  exit 1
+}
+
+# Validate that tmux is running
+check_tmux_running() {
+  if ! tmux has-session 2>/dev/null; then
+    error_exit "No tmux sessions found"
+  fi
+}
+
+# Get current session name
+get_current_session() {
+  tmux display-message -p '#S'
+}
+
+# Check if session exists
+check_session_exists() {
+  local session_name="$1"
+  if ! tmux has-session -t "$session_name" 2>/dev/null; then
+    error_exit "$session_name" "Session does not exist"
+  fi
+}
+
+# Main function to handle session deletion
+delete_session() {
+  local session_name="$1"
+  local current_session
+
+  current_session="$(get_current_session)"
+
+  if { [ "$current_session" = "$session_name" ] && [ "tmux" = "$TERM_PROGRAM" ]; }; then
+    delete_current_session
+  fi
+
+  read -r -p "Are you sure you want to delete the session, '$current_session'? (y/n): " REPLY </dev/tty
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    tmux kill-session -t "$session_name"
+    echo "Session '$session_name' deleted successfully"
+    exit 0
+  else
+    exit 1
+  fi
+}
+
+delete_current_session() {
+  local current_session
+
+  current_session="$(get_current_session)"
+  read -r -p "Are you sure you want to delete your current session, '$current_session'? (y/n): " REPLY </dev/tty
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    tmux kill-session -t "$current_session"
+    echo "Session '$current_session' deleted successfully"
+    exit 0
+  else
+    exit 1
+  fi
+}
+
+# check() {
+#   local foo echo "test"
+#   foo=$(
+#     [ "tmux" = "$TERM_PROGRAM" ]
+#     echo $?
+#   )
+#   echo "$foo"
+#   exit 0
+# }
+
+# Main script execution
+main() {
+
+  # Check for help flags first
+  if [ $# -eq 1 ] && { [ "$1" = "-h" ] || [ "$1" = "--help" ]; }; then
+    usage
+    exit 0
+  fi
+
+  # Check for correct number of arguments
+  if [ $# -gt 1 ]; then
+    echo "Too many arguments. Expected 1 argument, got $#."
+    usage
+    exit 1
+  fi
+
+  if [ $# -eq 0 ]; then
+    local session_name="$(get_current_session)"
+  else
+    local session_name="$1"
+  fi
+
+  # Run checks
+  check_tmux_running
+  check_session_exists "$session_name"
+
+  # Attempt to delete session
+  delete_session "$session_name"
+}
+
+# Execute main function
+main "$@"
