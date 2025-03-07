@@ -84,3 +84,11 @@ label:focus {
     /*background-color: #90b1b1;*/
     /*color: #2a5c45;*/
 }
+
+#battery,
+#network,
+#pulseaudio,
+#mode {
+    padding: 0 10px;
+    color: #ffffff;
+}
