@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Set strict error handling
+# Set strict error handling.
 set -euo pipefail
 
 # Store the program name without extension for error messages
