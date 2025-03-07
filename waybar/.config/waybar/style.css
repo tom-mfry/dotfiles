@@ -84,3 +84,19 @@ label:focus {
     /*background-color: #90b1b1;*/
     /*color: #2a5c45;*/
 }
+
+#workspaces {
+}
+
+#workspaces button {
+  color: rgba(255, 255, 255, 0.5);
+  border: none;
+}
+
+#workspaces button.persistent {
+}
+
+#workspaces button.active {
+  font-weight: bold;
+  color: rgba(255, 255, 255, 1);
+}
