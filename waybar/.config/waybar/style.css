@@ -45,7 +45,7 @@ button:hover {
 #clock,
 #pulseaudio,
 #mpd {
-    padding: 0 10px;
+    /*padding-left: 10px;*/
     color: #ffffff;
 }
 
@@ -55,14 +55,16 @@ button:hover {
 }
 
 .modules-left {
+  padding-left: 10px;
+}
+
+.modules-right {
+  padding-right: 10px;
 }
 
 /* If workspaces is the rightmost module, omit right margin */
 .modules-right > widget:last-child > #workspaces {
     margin-right: 0;
-}
-
-#clock {
 }
 
 @keyframes blink {
@@ -83,4 +85,20 @@ label:focus {
 #pulseaudio.muted {
     /*background-color: #90b1b1;*/
     /*color: #2a5c45;*/
+}
+
+#workspaces {
+}
+
+#workspaces button {
+  color: rgba(255, 255, 255, 0.5);
+  border: none;
+}
+
+#workspaces button.persistent {
+}
+
+#workspaces button.active {
+  font-weight: bold;
+  color: rgba(255, 255, 255, 1);
 }
