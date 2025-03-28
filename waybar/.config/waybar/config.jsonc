@@ -28,22 +28,22 @@
     "interval": 1
   },
   "network": {
-    "interface": "wlp2s0",
+    // "interface": "wlp2s0",
     "format": "{ifname}",
     "format-wifi": "{essid} ({signalStrength}%) ",
-    "format-ethernet": "{ifname} ",
+    "format-ethernet": "",
     "format-disconnected": "",
     "tooltip-format": "{ifname}",
     "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
-    "tooltip-format-ethernet": "{ifname} ",
+    "tooltip-format-ethernet": "{ifname} ",
     "tooltip-format-disconnected": "Disconnected",
     "max-length": 50
   },
-  "custom/vpn": {
-    "format": "{}",
-    "exec": "curl -s www.icanhazip.com",
-    "interval": 30
-  },
+  // "custom/vpn": {
+  //   "format": "{}",
+  //   "exec": "curl -s www.icanhazip.com",
+  //   "interval": 30
+  // },
   "pulseaudio": {
     // "scroll-step": 1, // %, can be a float
     "format": "{volume}% {icon}",
