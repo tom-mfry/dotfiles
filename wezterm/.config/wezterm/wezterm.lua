@@ -1,11 +1,16 @@
-local wezterm = require("wezterm")
+local wezterm = require 'wezterm'
 
-local config = wezterm.config_builder()
---
--- config.color_scheme = "Catppuccin Macchiato"
-config.color_scheme = "Catppuccin Mocha"
-config.font_size = 12
-config.hide_tab_bar_if_only_one_tab = true
-config.window_background_opacity = 0.85
+return {
+  color_scheme = "Catppuccin Mocha",
+  hide_tab_bar_if_only_one_tab = true,
+  window_background_opacity = 0.85,
+  enable_wayland = false,
 
-return config
+  font = wezterm.font_with_fallback {
+    'JetBrainsMono Nerd Font',
+    'MesloLGSDZ Nerd Font Mono',
+    'Symbols Nerd Font Mono',
+  },
+
+  font_size = 12.0,
+}
