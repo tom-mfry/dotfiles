@@ -1,0 +1,12 @@
+alias rzsh='source ~/.zshrc && echo "~/.zshrc reloaded."'
+alias tmls='tmux ls'
+alias py=python
+
+alias ls='ls --color=auto'
+alias ll='ls -alF'
+
+alias gaa='git add .'
+alias ga='git add'
+alias gc='git commit'
+alias gd='git diff'
+alias gst='git status'
